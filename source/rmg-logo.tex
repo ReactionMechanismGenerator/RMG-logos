@@ -1,0 +1,86 @@
+\documentclass[tikz, margin=10pt]{standalone}
+
+\definecolor{rmgred}{HTML}{F04040}
+\definecolor{rmggray}{HTML}{A0A0A0}
+\definecolor{rmgdarkgray}{HTML}{404040}
+
+\begin{document}
+\tikzset{every picture/.style={line width=16, line cap=rect}}
+
+% color choices
+\newcommand*{\maincolor}{rmgred}
+\newcommand*{\subcolor}{rmggray}
+
+% specified values
+\newcommand*{\ec}{0.28}  % Error correction = half of line width (note difference in units)
+\newcommand*{\base}{6.0}  % Coordinate of r baseline
+\newcommand*{\head}{10.0}  % Coordinate of topline
+\newcommand*{\halfr}{2.0}  % Width of half r
+\newcommand*{\quarterm}{1.618}  % Width of quarter m
+\newcommand*{\bottomgap}{2.0}  % Space between arrows
+\newcommand*{\rleft}{0}  % Starting x coordinate for r
+
+% calculated values
+\newcommand*{\topgap}{4*\ec}  % Space between baseline and top arrow
+\newcommand*{\tweengap}{4*\ec}  % Space between letters
+\newcommand*{\mleft}{\rleft+2*\halfr+\tweengap}
+\newcommand*{\gleft}{\rleft+2*\halfr+4*\quarterm+2*\tweengap}
+\newcommand*{\midlow}{\head-\halfr}  % Starting point for r and g curves
+\newcommand*{\midhigh}{\head-\quarterm}  % Starting point for m curves
+\newcommand*{\arrowheight}{\halfr+0.5*\topgap}
+\newcommand*{\arrowheightneg}{\halfr-0.5*\topgap}
+\newcommand*{\toparrow}{\base-\topgap}
+\newcommand*{\bottomarrow}{\toparrow-\bottomgap}
+
+\begin{tikzpicture}[scale=1]
+% r
+\draw[\maincolor] (\rleft,\midlow) to (\rleft,\head);
+\draw[\maincolor] (\rleft,\base) to (\rleft,\midlow) arc (180:30:\halfr);
+
+% m
+\draw[\maincolor] (\mleft,\midhigh) to (\mleft,\head);
+\draw[\maincolor] (\mleft+2*\quarterm,\base) to (\mleft+2*\quarterm,\midhigh);
+\draw[\maincolor] (\mleft,\base) to (\mleft,\midhigh) arc (180:0:\quarterm) arc (180:0:\quarterm)to (\mleft+4*\quarterm,\base);
+
+% g
+\draw[\maincolor] (\gleft,\midlow) arc (180:0:\halfr);
+
+\begin{scope}
+\clip (\gleft+\halfr+\ec,\head+\ec)
+   -- (\gleft+2*\halfr+\ec,\head+\ec)
+   -- (\gleft+2*\halfr+\ec,\bottomarrow-\ec)
+   -- (\gleft+\halfr+\ec,\bottomarrow-\ec)
+   -- cycle;
+
+\draw[\maincolor] (\gleft+\halfr,\toparrow) arc (270:360:\halfr);
+\draw[\maincolor] (\gleft+2*\halfr,\head) to (\gleft+2*\halfr,\toparrow) arc (0:-90:\halfr);
+\end{scope}
+
+% Top arrow
+\begin{scope}
+\clip (\rleft-\ec,\toparrow-\ec)
+   -- (\gleft+\halfr-\ec,\toparrow-\ec)
+   -- (\gleft+\halfr-\ec,\toparrow+\arrowheight-\ec)
+   -- (\rleft-\ec,\toparrow+\arrowheight-\ec)
+   -- cycle;
+\draw[\subcolor] (\rleft,\toparrow)
+              to (\gleft+\halfr,\toparrow)
+             arc (270:180:\halfr);
+\end{scope}
+
+% Bottom arrow
+\begin{scope}
+\clip (\rleft-\ec,\bottomarrow+\ec)
+   -- (\gleft+\halfr-\ec,\bottomarrow+\ec)
+   -- (\gleft+\halfr-\ec,\bottomarrow-\arrowheightneg+\ec)
+   -- (\rleft-\ec,\bottomarrow-\arrowheightneg+\ec)
+   -- cycle;
+\draw[\subcolor] (\gleft+\halfr,\bottomarrow)
+              to (\rleft-2*\ec,\bottomarrow)
+             arc (90:0:\halfr);
+\end{scope}
+\end{tikzpicture}
+
+
+\end{document}
+
